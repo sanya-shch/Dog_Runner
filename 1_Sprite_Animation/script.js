@@ -1,6 +1,12 @@
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 
+let playerState = "idle";
+const dropdown = document.getElementById('animations');
+dropdown.addEventListener('change', function (event) {
+    playerState = event.target.value;
+});
+
 const CANVAS_WIDTH = canvas.width = 600;
 const CANVAS_HEIGHT = canvas.height = 600;
 
@@ -73,8 +79,6 @@ animationStates.forEach(({name, numberOfFrames}, index) => {
 
     spriteAnimations[name] = frames;
 });
-
-let playerState = "run";
 
 function animate() {
     ctx.clearRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
