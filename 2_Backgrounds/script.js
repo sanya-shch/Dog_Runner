@@ -16,8 +16,6 @@ const backgroundLayer5 = new Image();
 backgroundLayer5.src = 'layer-5.png';
 
 let gameSpeed = 10;
-let x1 = 0;
-let x2 = 2400;
 
 class Layer {
     constructor(image, speedModifier) {
@@ -45,16 +43,33 @@ class Layer {
     }
 }
 
+const layer1 = new Layer(backgroundLayer1, 0.2);
+const layer2 = new Layer(backgroundLayer2, 0.4);
+const layer3 = new Layer(backgroundLayer3, 0.6);
+const layer4 = new Layer(backgroundLayer4, 0.8);
+const layer5 = new Layer(backgroundLayer5, 1);
+
+const gameLayers = [layer1, layer2, layer3, layer4, layer5];
+
 function animate() {
     ctx.clearRect(0,0,CANVAS_WIDTH,CANVAS_HEIGHT);
 
-    ctx.drawImage(backgroundLayer4, x1, 0);
-    ctx.drawImage(backgroundLayer4, x2, 0);
+    // layer1.update();
+    // layer2.update();
+    // layer3.update();
+    // layer4.update();
+    // layer5.update();
 
-    if (x1 < -2400) x1 = 2400 + x2 - gameSpeed;
-    else x1-=gameSpeed;
-    if (x2 < -2400) x2 = 2400 + x1 - gameSpeed;
-    else x2-=gameSpeed;
+    // layer1.draw();
+    // layer2.draw();
+    // layer3.draw();
+    // layer4.draw();
+    // layer5.draw();
+
+    gameLayers.forEach(layer => {
+        layer.update();
+        layer.draw();
+    });
 
     requestAnimationFrame(animate);
 }
