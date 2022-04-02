@@ -6,24 +6,43 @@ const CANVAS_HEIGHT = canvas.height = 1000;
 
 const numberOfEnemies = 100;
 const enemiesArray = [];
+let gameFrame = 0;
+
+// const enemy1Image = new Image();
+// enemy1Image.src = 'enemy1.png';
+// const enemy2Image = new Image();
+// enemy2Image.src = 'enemy2.png';
+// const enemy3Image = new Image();
+// enemy3Image.src = 'enemy3.png';
+// const enemy4Image = new Image();
+// enemy4Image.src = 'enemy4.png';
 
 class Enemy {
     constructor() {
+        this.image = new Image();
+        this.image.src = 'enemy1.png';
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.width = 100;
-        this.height = 100;
         this.speed = Math.random() * 4 - 2;
+        this.spriteWidth = 293;
+        this.spriteHeight = 155;
+        this.width = this.spriteWidth / 2.5;
+        this.height = this.spriteHeight / 2.5;
+        this.frame = 1;
+        this.flapSpeed = Math.floor(Math.random() * 3 +1);
     }
     update() {
-        // this.x++;
-        // this.y++;
         this.x += this.speed;
         this.y += this.speed;
+
+        if (gameFrame % this.flapSpeed === 0) {
+            this.frame > 4 ? this.frame = 0 : this.frame++;
+        }
     }
     draw() {
         // ctx.fillRect(this.x, this.y, this.width, this.height);
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
+        // ctx.strokeRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
     }
 }
 
@@ -39,6 +58,7 @@ function animate() {
         enemy.draw();
     });
 
+    gameFrame++;
     requestAnimationFrame(animate);
 }
 animate();
