@@ -15,9 +15,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             this.enemyInterval = 500;
             this.enemyTimer = 0;
-            this.enemyTypes = ["ghost", "worm"];
+            this.enemyTypes = ["ghost", "worm", "spider"];
         }
         update (deltaTime) {
+            // console.log(this.enemies)
             this.enemies = this.enemies.filter(obj => !obj.markedForDeletion);
             if (this.enemyTimer > this.enemyInterval) {
                 this.#addNewEnemy();
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (randomEnemy === "ghost")  this.enemies.push(new Ghost(this));
             else if (randomEnemy === "worm")  this.enemies.push(new Worm(this));
+            else if (randomEnemy === "spider")  this.enemies.push(new Spider(this));
 
             // this.enemies.sort((a, b) => a.y - b.y);
         }
@@ -50,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.x -= this.vx * deltaTime;
 
             if (this.x < 0 - this.width) this.markedForDeletion = true;
+            if (this.y < 0 - this.height) this.markedForDeletion = true;
         }
         draw (ctx) {
             // ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -97,6 +100,36 @@ document.addEventListener("DOMContentLoaded", function () {
             this.y = this.game.height - this.height;
             this.image = worm;
             this.vx = Math.random() * 0.1 + 0.1;
+        }
+    }
+
+    class Spider extends Enemy {
+        constructor(game) {
+            super(game);
+
+            this.spriteWidth = 310;
+            this.spriteHeight = 175;
+            this.width = this.spriteWidth / 2;
+            this.height = this.spriteHeight / 2;
+            this.x = Math.random() * this.game.width;
+            this.y = 0 - this.height;
+            this.image = spider;
+            this.vx = 0;
+            this.vy = Math.random() * 0.1 + 0.1;
+            this.maxLength = Math.random() * this.game.height;
+        }
+        update(deltaTime) {
+            super.update(deltaTime);
+            this.y += this.vy * deltaTime;
+
+            if(this.y > this.maxLength) this.vy *= -1;
+        }
+        draw(ctx) {
+            ctx.beginPath();
+            ctx.moveTo(this.x + this.width/2, 0);
+            ctx.lineTo(this.x + this.width/2, this.y + 10);
+            ctx.stroke();
+            super.draw(ctx);
         }
     }
 
