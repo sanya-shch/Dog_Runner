@@ -13,8 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             this.enemies = [];
 
-            this.enemyInterval = 1000;
+            this.enemyInterval = 500;
             this.enemyTimer = 0;
+            this.enemyTypes = ["ghost", "worm"];
         }
         update (deltaTime) {
             this.enemies = this.enemies.filter(obj => !obj.markedForDeletion);
@@ -25,32 +26,77 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.enemyTimer += deltaTime;
             }
 
-            this.enemies.forEach(obj => obj.update());
+            this.enemies.forEach(obj => obj.update(deltaTime));
         }
         draw () {
             this.enemies.forEach(obj => obj.draw(this.ctx));
         }
         #addNewEnemy () {
-            this.enemies.push(new Enemy(this));
+            const randomEnemy = this.enemyTypes[Math.floor(Math.random() * this.enemyTypes.length)];
+
+            if (randomEnemy === "ghost")  this.enemies.push(new Ghost(this));
+            else if (randomEnemy === "worm")  this.enemies.push(new Worm(this));
+
+            // this.enemies.sort((a, b) => a.y - b.y);
         }
     }
 
     class Enemy {
         constructor (game) {
             this.game = game;
-            this.x = this.game.width;
-            this.y = Math.random() * this.game.height;
-            this.width = 100;
-            this.height = 100;
             this.markedForDeletion = false;
         }
-        update () {
-            this.x--;
+        update (deltaTime) {
+            this.x -= this.vx * deltaTime;
 
             if (this.x < 0 - this.width) this.markedForDeletion = true;
         }
         draw (ctx) {
-            ctx.fillRect(this.x, this.y, this.width, this.height);
+            // ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.drawImage(this.image, 0, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+        }
+    }
+
+    class Ghost extends Enemy {
+        constructor(game) {
+            super(game);
+
+            this.spriteWidth = 261;
+            this.spriteHeight = 209;
+            this.width = this.spriteWidth / 2;
+            this.height = this.spriteHeight / 2;
+            this.x = this.game.width;
+            this.y = Math.random() * this.game.height * 0.7;
+            this.image = ghost;
+            this.vx = Math.random() * 0.2 + 0.1;
+            this.angle = 0;
+            this.curve = Math.random() * 3;
+        }
+        update(deltaTime) {
+            super.update(deltaTime);
+            this.y += Math.sin(this.angle) * this.curve;
+            this.angle += 0.04;
+        }
+        draw(ctx) {
+            ctx.save();
+            ctx.globalAlpha = 0.5;
+            super.draw(ctx);
+            ctx.restore();
+        }
+    }
+
+    class Worm extends Enemy {
+        constructor(game) {
+            super(game);
+
+            this.spriteWidth = 229;
+            this.spriteHeight = 171;
+            this.width = this.spriteWidth / 2;
+            this.height = this.spriteHeight / 2;
+            this.x = this.game.width;
+            this.y = this.game.height - this.height;
+            this.image = worm;
+            this.vx = Math.random() * 0.1 + 0.1;
         }
     }
 
