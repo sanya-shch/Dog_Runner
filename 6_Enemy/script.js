@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
             this.enemyTimer = 0;
         }
         update (deltaTime) {
+            this.enemies = this.enemies.filter(obj => !obj.markedForDeletion);
             if (this.enemyTimer > this.enemyInterval) {
                 this.#addNewEnemy();
                 this.enemyTimer = 0;
@@ -41,9 +42,12 @@ document.addEventListener("DOMContentLoaded", function () {
             this.y = Math.random() * this.game.height;
             this.width = 100;
             this.height = 100;
+            this.markedForDeletion = false;
         }
         update () {
             this.x--;
+
+            if (this.x < 0 - this.width) this.markedForDeletion = true;
         }
         draw (ctx) {
             ctx.fillRect(this.x, this.y, this.width, this.height);
