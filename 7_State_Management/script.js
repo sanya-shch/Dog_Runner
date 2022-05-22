@@ -15,14 +15,19 @@ document.addEventListener("DOMContentLoaded", function () { // load DOMContentLo
     const player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT);
     const input = new InputHandler();
 
-    function animate() {
+    let lastTime = 1;
+
+    function animate(timeStamp) {
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+        const deltaTime = timeStamp - lastTime;
+        lastTime = timeStamp;
+
         player.update(input.lastKey);
-        player.draw(ctx);
+        player.draw(ctx, deltaTime);
 
         drawStatusText(ctx, input, player);
         requestAnimationFrame(animate);
     }
-    animate();
+    animate(0);
 });

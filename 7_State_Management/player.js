@@ -38,7 +38,11 @@ export default class Player {
         ];
         this.currentState = this.states[0];
         this.speed = 0;
-        this.maxSpeed = 10;
+        this.maxSpeed = 12;
+        this.maxFrame = 6;
+        this.fps = 30;
+        this.frameTimer = 0;
+        this.frameInterval = 1000/this.fps;
     }
     update(input) {
         this.currentState.handleInput(input);
@@ -53,7 +57,16 @@ export default class Player {
 
         if (this.y > this.gameHeight - this.height) this.y = this.gameHeight - this.height;
     }
-    draw(ctx) {
+    draw(ctx, deltaTime) {
+        if (this.frameTimer > this.frameInterval) {
+            if (this.frameX < this.maxFrame) this.frameX++;
+            else this.frameX = 0;
+
+            this.frameTimer = 0;
+        } else {
+            this.frameTimer += deltaTime;
+        }
+
         ctx.drawImage(this.image, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
     }
     setState(state) {
