@@ -1,4 +1,11 @@
-import { StandingLeft, StandingRight, SittingLeft, SittingRight } from "./state.js";
+import {
+    StandingLeft,
+    StandingRight,
+    SittingLeft,
+    SittingRight,
+    RunningLeft,
+    RunningRight,
+} from "./state.js";
 
 export default class Player {
     constructor(gameWidth, gameHeight) {
@@ -11,11 +18,24 @@ export default class Player {
         this.image = document.getElementById("dogImage");
         this.frameX = 0;
         this.frameY = 0;
-        this.states = [new StandingLeft(this), new StandingRight(this), new SittingLeft(this), new SittingRight(this)];
+        this.states = [
+            new StandingLeft(this),
+            new StandingRight(this),
+            new SittingLeft(this),
+            new SittingRight(this),
+            new RunningLeft(this),
+            new RunningRight(this),
+        ];
         this.currentState = this.states[0];
+        this.speed = 0;
+        this.maxSpeed = 10;
     }
     update(input) {
         this.currentState.handleInput(input);
+
+        this.x += this.speed;
+        if (this.x <= 0) this.x = 0;
+        else if (this.x >= this.gameWidth - this.width) this.x = this.gameWidth - this.width;
     }
     draw(ctx) {
         ctx.drawImage(this.image, this.width * this.frameX, this.height * this.frameY, this.width, this.height, this.x, this.y, this.width, this.height);
